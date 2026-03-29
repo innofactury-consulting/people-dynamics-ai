@@ -1945,16 +1945,20 @@ function irParaDiagnostico(role){
 function populateFormSelects(){
   const hier=tenantConfig.hierarchy||[];
   const areas=tenantConfig.areas||[];
-  ['f-cargo','fl-cargo'].forEach(id=>{
+
+  // f-cargo and f-area (assessment form) — from tenant config
+  ['f-cargo'].forEach(id=>{
     const sel=document.getElementById(id);if(!sel)return;
     sel.innerHTML='<option value="">—</option>';
     hier.forEach(h=>{const o=document.createElement('option');o.value=h;o.textContent=h;sel.appendChild(o);});
   });
-  ['f-area','fl-area'].forEach(id=>{
+  ['f-area'].forEach(id=>{
     const sel=document.getElementById(id);if(!sel)return;
     sel.innerHTML='<option value="">—</option>';
     areas.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);});
   });
+  // fl-cargo / fl-area keep their own HTML options — restore saved customs
+  setTimeout(initSmartSelects, 100);
 }
 
 function updateLiderSelect(){
@@ -2123,13 +2127,16 @@ function limpar(){
 // ════════════════════════════════════════════════════════
 async function salvarLider(){
   const nome=document.getElementById('fl-nome').value.trim();
-  const cargo=document.getElementById('fl-cargo').value;
-  const area=document.getElementById('fl-area').value;
+  let cargo=document.getElementById('fl-cargo').value;
+  let area=document.getElementById('fl-area').value;
   const superiorId=document.getElementById('fl-superior').value||null;
   const editId=document.getElementById('fl-edit-id').value;
+  // Block if __new__ was selected but not confirmed
+  if(cargo==='__new__') cargo='';
+  if(area==='__new__') area='';
   if(!nomeValido(nome)){showAlert('alert-lid','Enter first and last name.','error');return;}
-  if(!cargo){showAlert('alert-lid','Select a position.','error');return;}
-  if(!area){showAlert('alert-lid','Select an area.','error');return;}
+  if(!cargo||cargo===''){showAlert('alert-lid','Select or add a position.','error');return;}
+  if(!area||area===''){showAlert('alert-lid','Select or add an area.','error');return;}
 
   if(editId){
     const idx=lideresCad.findIndex(l=>l.id===editId);
