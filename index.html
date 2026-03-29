@@ -163,7 +163,7 @@ textarea.fi{resize:vertical;min-height:70px}
 
 /* ════════ ROLE BUTTONS ════════ */
 .role-row{display:flex;gap:10px;flex-wrap:wrap}
-.role-btn{padding:10px 20px;border-radius:var(--r);border:2px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--muted);transition:all .2s}
+.role-btn{padding:11px 20px;border-radius:var(--r);border:2px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--muted);transition:all .2s;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .role-btn.sel{border-color:var(--primary);background:var(--primary);color:white}
 
 /* ════════ WORD TABLE ════════ */
@@ -662,35 +662,91 @@ body.edit-mode .selected-el{
     <!-- REGISTER FORM -->
     <div class="card" id="form-lider-card">
       <div class="card-title" id="form-lider-titulo">➕ <span data-lang="en">Register Management Position</span><span data-lang="pt">Cadastrar Cargo de Gestão</span></div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
+
+      <div style="margin-bottom:14px">
         <div class="fg">
-          <label><span data-lang="en">Manager's full name</span><span data-lang="pt">Nome completo do gestor</span></label>
+          <label><span data-lang="en">Manager full name</span><span data-lang="pt">Nome completo do gestor</span></label>
           <input class="fi" id="fl-nome" oninput="validarNomeInput(this)" placeholder="Ex: Ana Souza">
-          <span style="font-size:.7rem;color:var(--muted);margin-top:3px">
+          <span style="font-size:.7rem;color:var(--muted);margin-top:3px;display:block">
             <span data-lang="en">First and last name required</span>
             <span data-lang="pt">Primeiro e último nome obrigatórios</span>
           </span>
         </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px">
         <div class="fg">
           <label><span data-lang="en">Management position</span><span data-lang="pt">Cargo de gestão</span></label>
-          <select class="fi" id="fl-cargo"><option value="">—</option></select>
+          <select class="fi" id="fl-cargo" onchange="smartSelectChange(this,'fl-cargo-new')">
+            <option value="">— selecione —</option>
+            <option>CEO / Presidente</option>
+            <option>VP</option>
+            <option>Diretor</option>
+            <option>Gerente</option>
+            <option>Coordenador</option>
+            <option>Supervisor</option>
+            <option>Líder</option>
+            <option value="__new__">➕ Adicionar novo cargo...</option>
+          </select>
+          <div id="fl-cargo-new" style="display:none;margin-top:6px">
+            <div style="display:flex;gap:8px">
+              <input class="fi" id="fl-cargo-input" placeholder="Ex: Gerente Executivo" style="flex:1">
+              <button class="btn btn-primary btn-sm" onclick="addOpt('fl-cargo','fl-cargo-input','fl-cargo-new')">+ Add</button>
+              <button class="btn btn-outline btn-sm" onclick="cancelOpt('fl-cargo','fl-cargo-new')">✕</button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
+
         <div class="fg">
           <label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label>
-          <select class="fi" id="fl-area"><option value="">—</option></select>
+          <select class="fi" id="fl-area" onchange="smartSelectChange(this,'fl-area-new')">
+            <option value="">— selecione —</option>
+            <option>Operações</option>
+            <option>Geral</option>
+            <option>Funcional</option>
+            <option>Manutenção</option>
+            <option>RH</option>
+            <option>Gente e Gestão</option>
+            <option>Compliance</option>
+            <option>Jurídico</option>
+            <option>Logística</option>
+            <option>Qualidade</option>
+            <option>Engenharia</option>
+            <option>Excelência Operacional</option>
+            <option>Comercial</option>
+            <option>Financeiro</option>
+            <option>Produção</option>
+            <option>Manufatura</option>
+            <option>SSQV</option>
+            <option>TI / Tecnologia</option>
+            <option>Suprimentos</option>
+            <option>Florestal</option>
+            <option>Colheita</option>
+            <option>Silvicultura</option>
+            <option value="__new__">➕ Adicionar nova área...</option>
+          </select>
+          <div id="fl-area-new" style="display:none;margin-top:6px">
+            <div style="display:flex;gap:8px">
+              <input class="fi" id="fl-area-input" placeholder="Ex: Operação Florestal" style="flex:1">
+              <button class="btn btn-primary btn-sm" onclick="addOpt('fl-area','fl-area-input','fl-area-new')">+ Add</button>
+              <button class="btn btn-outline btn-sm" onclick="cancelOpt('fl-area','fl-area-new')">✕</button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div style="margin-bottom:16px">
         <div class="fg">
-          <label><span data-lang="en">Reports to (direct superior)</span><span data-lang="pt">Reporta a (superior direto)</span></label>
+          <label><span data-lang="en">Reports to</span><span data-lang="pt">Reporta a</span> <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(superior direto)</span></label>
           <select class="fi" id="fl-superior">
-            <option value="">— <span data-lang="en">Top of hierarchy (no superior)</span><span data-lang="pt">Topo da hierarquia (sem superior)</span> —</option>
+            <option value="">— Topo da hierarquia (sem superior) —</option>
           </select>
         </div>
       </div>
+
       <input type="hidden" id="fl-edit-id">
       <div class="btn-row">
-        <button class="btn btn-primary btn-sm" onclick="salvarLider()">💾 <span data-lang="en">Save position</span><span data-lang="pt">Salvar cargo</span></button>
+        <button class="btn btn-primary btn-sm" onclick="salvarLider()">💾 <span data-lang="en">Save</span><span data-lang="pt">Salvar</span></button>
         <button class="btn btn-outline btn-sm" onclick="cancelarEdicaoLider()">↩ <span data-lang="en">Cancel</span><span data-lang="pt">Cancelar</span></button>
       </div>
     </div>
@@ -709,35 +765,56 @@ body.edit-mode .selected-el{
     <div id="alerta-cad" class="alert"></div>
     <div class="card">
       <div class="card-title">👤 <span data-lang="en">Identification</span><span data-lang="pt">Identificação</span></div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
+
+      <!-- ROW 1: Name full width -->
+      <div style="margin-bottom:14px">
         <div class="fg">
           <label><span data-lang="en">Full name</span><span data-lang="pt">Nome completo</span></label>
           <input class="fi" id="f-nome" placeholder="Ex: João Silva" oninput="validarNomeInput(this)">
-          <span id="nome-hint" style="font-size:.7rem;color:var(--red);display:none"><span data-lang="en">Please enter first and last name</span><span data-lang="pt">Informe primeiro e último nome</span></span>
-        </div>
-        <div class="fg">
-          <label><span data-lang="en">Role</span><span data-lang="pt">Função</span></label>
-          <div class="role-row" style="margin-top:4px">
-            <button class="role-btn" id="rbtn-lider" onclick="selRole(this,'lider')">🎯 <span data-lang="en">Leader</span><span data-lang="pt">Líder</span></button>
-            <button class="role-btn" id="rbtn-staff" onclick="selRole(this,'staff')">🌱 <span data-lang="en">Collaborator</span><span data-lang="pt">Colaborador</span></button>
-          </div>
+          <span id="nome-hint" style="font-size:.7rem;color:var(--red);display:none">
+            <span data-lang="en">Please enter first and last name</span>
+            <span data-lang="pt">Informe primeiro e último nome</span>
+          </span>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
-        <div class="fg"><label><span data-lang="en">Position</span><span data-lang="pt">Cargo</span></label><select class="fi" id="f-cargo"><option value="">—</option></select></div>
-        <div class="fg"><label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label><select class="fi" id="f-area"><option value="">—</option></select></div>
+
+      <!-- ROW 2: Role buttons full width -->
+      <div style="margin-bottom:14px">
+        <label style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:8px">
+          <span data-lang="en">Role</span><span data-lang="pt">Função</span>
+        </label>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="role-btn" id="rbtn-lider" onclick="selRole(this,'lider')" style="flex:1;min-width:140px;max-width:220px">
+            🎯 <span data-lang="en">Leader</span><span data-lang="pt">Líder</span>
+          </button>
+          <button class="role-btn" id="rbtn-staff" onclick="selRole(this,'staff')" style="flex:1;min-width:140px;max-width:220px">
+            🌱 <span data-lang="en">Collaborator</span><span data-lang="pt">Colaborador</span>
+          </button>
+        </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+      <!-- ROW 3: Position + Area -->
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px">
         <div class="fg">
-          <label><span data-lang="en">Direct Leader / Superior</span><span data-lang="pt">Líder Direto / Superior</span></label>
-          <select class="fi" id="f-lider"><option value="">— <span data-lang="en">Top of hierarchy</span><span data-lang="pt">Topo da hierarquia</span> —</option></select>
+          <label><span data-lang="en">Position</span><span data-lang="pt">Cargo</span></label>
+          <select class="fi" id="f-cargo"><option value="">—</option></select>
         </div>
-        <div class="fg" style="align-self:flex-end">
-          <div style="font-size:.74rem;color:var(--muted);padding:8px 0;line-height:1.5">
-            <span data-lang="en">Select your direct leader. Leave blank if you are at the top of the hierarchy.</span>
-            <span data-lang="pt">Selecione seu líder direto. Deixe em branco se você está no topo da hierarquia.</span>
-          </div>
+        <div class="fg">
+          <label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label>
+          <select class="fi" id="f-area"><option value="">—</option></select>
         </div>
+      </div>
+
+      <!-- ROW 4: Direct leader full width -->
+      <div class="fg">
+        <label><span data-lang="en">Direct Leader / Superior</span><span data-lang="pt">Líder Direto / Superior</span></label>
+        <select class="fi" id="f-lider">
+          <option value="">— <span data-lang="en">Top of hierarchy (no direct leader)</span><span data-lang="pt">Topo da hierarquia (sem líder direto)</span> —</option>
+        </select>
+        <span style="font-size:.73rem;color:var(--muted);margin-top:4px;display:block">
+          <span data-lang="en">Select your direct leader. Leave blank if you are at the top of the hierarchy.</span>
+          <span data-lang="pt">Selecione seu líder direto. Deixe em branco se você está no topo da hierarquia.</span>
+        </span>
       </div>
     </div>
 
@@ -1484,6 +1561,8 @@ function showApp(){
 
   // Apply tenant branding
   applyTenantBranding();
+  // Init smart selects
+  setTimeout(initSmartSelects, 300);
 
   // Check if admin
   isAdmin = currentUser?.email === INNOFACTURY_ADMIN_EMAIL;
@@ -2510,6 +2589,74 @@ function renderHierarquiaVisual(){
   }
   wrap.innerHTML = roots.map(r=>buildNode(r,0)).join('') || 
     '<div style="color:var(--muted);font-size:.83rem;padding:12px">No top-level positions found.</div>';
+}
+
+// ════════════════════════════════════════════════════════
+// SMART SELECT — add new options dynamically
+// ════════════════════════════════════════════════════════
+// Load saved custom options from localStorage
+const customOptions = JSON.parse(localStorage.getItem('pda_custom_opts') || '{}');
+
+function initSmartSelects(){
+  // Restore saved custom options
+  Object.entries(customOptions).forEach(([selId, opts])=>{
+    const sel = document.getElementById(selId);
+    if(!sel) return;
+    opts.forEach(v => {
+      if(![...sel.options].some(o=>o.value===v)){
+        const newOpt = document.createElement('option');
+        newOpt.value = v; newOpt.textContent = v;
+        // Insert before the last option (__ new __)
+        const last = sel.options[sel.options.length-1];
+        sel.insertBefore(newOpt, last);
+      }
+    });
+  });
+}
+
+function smartSelectChange(sel, newDivId){
+  const div = document.getElementById(newDivId);
+  if(!div) return;
+  if(sel.value === '__new__'){
+    div.style.display = 'block';
+    const inp = div.querySelector('input');
+    if(inp){ inp.value=''; inp.focus(); }
+    sel.value = '';
+  } else {
+    div.style.display = 'none';
+  }
+}
+
+function addOpt(selId, inputId, divId){
+  const sel = document.getElementById(selId);
+  const inp = document.getElementById(inputId);
+  const div = document.getElementById(divId);
+  if(!sel || !inp || !inp.value.trim()) return;
+  const val = inp.value.trim();
+  // Check duplicate
+  if([...sel.options].some(o=>o.value===val)){
+    sel.value = val;
+    div.style.display='none';
+    return;
+  }
+  // Add before last option
+  const newOpt = document.createElement('option');
+  newOpt.value = val; newOpt.textContent = val;
+  const last = sel.options[sel.options.length-1];
+  sel.insertBefore(newOpt, last);
+  sel.value = val;
+  div.style.display = 'none';
+  // Save to localStorage
+  if(!customOptions[selId]) customOptions[selId]=[];
+  customOptions[selId].push(val);
+  localStorage.setItem('pda_custom_opts', JSON.stringify(customOptions));
+}
+
+function cancelOpt(selId, divId){
+  const sel = document.getElementById(selId);
+  const div = document.getElementById(divId);
+  if(sel) sel.value='';
+  if(div) div.style.display='none';
 }
 
 // ════════════════════════════════════════════════════════
