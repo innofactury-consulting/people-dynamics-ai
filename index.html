@@ -76,7 +76,7 @@ select.fi{cursor:pointer}
 textarea.fi{resize:vertical;min-height:70px}
 
 /* ════════ BUTTONS ════════ */
-.btn{padding:12px 24px;border-radius:var(--r);font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;border:2px solid transparent;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn{padding:10px 20px;border-radius:var(--r);font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;border:2px solid transparent;display:inline-flex;align-items:center;gap:6px;justify-content:center;white-space:nowrap;flex-shrink:0}
 .btn-primary{background:var(--primary);color:white;border-color:var(--primary);width:100%}
 .btn-primary:hover{background:var(--primary-mid)}
 .btn-outline{background:transparent;color:var(--ink);border-color:var(--border-mid)}
@@ -85,7 +85,7 @@ textarea.fi{resize:vertical;min-height:70px}
 .btn-ghost:hover{color:var(--primary)}
 .btn-danger{background:var(--red-light);color:var(--red);border-color:var(--red)}
 .btn-sm{padding:7px 14px;font-size:.78rem}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
 
 /* ════════ ALERT ════════ */
 .alert{padding:12px 16px;border-radius:var(--r);font-size:.83rem;margin-bottom:14px;display:none;line-height:1.5}
@@ -100,7 +100,7 @@ textarea.fi{resize:vertical;min-height:70px}
 #app.show{display:block}
 
 /* ════════ HEADER ════════ */
-.app-header{background:var(--tenant-primary,var(--primary));color:white;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:3px solid rgba(255,255,255,.15);min-height:64px}
+.app-header{background:var(--tenant-primary,var(--primary));color:white;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:3px solid rgba(255,255,255,.15);min-height:60px;gap:12px;flex-wrap:nowrap}
 .header-brand{display:flex;align-items:center;gap:12px}
 .header-tenant-logo{width:38px;height:38px;border-radius:50%;object-fit:contain;background:white;padding:2px}
 .header-tenant-name{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:white}
@@ -116,14 +116,14 @@ textarea.fi{resize:vertical;min-height:70px}
 .logout-btn:hover{background:rgba(255,255,255,.15);color:white}
 
 /* ════════ NAV ════════ */
-.app-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:4px;overflow-x:auto}
+.app-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 .nav-btn{padding:12px 16px;font-family:inherit;font-size:.76rem;font-weight:600;border:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;background:transparent;color:var(--muted);transition:all .2s;white-space:nowrap;letter-spacing:.01em}
 .nav-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
 .nav-btn:hover:not(.active){color:var(--ink);background:var(--bg)}
 .nav-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--primary-light);color:var(--primary);border-radius:10px;font-size:.6rem;font-weight:700;padding:1px 6px;margin-left:5px}
 
 /* ════════ PAGES ════════ */
-.page{display:none;padding:32px 28px;max-width:1080px;margin:0 auto}
+.page{display:none;padding:28px 24px;max-width:1040px;margin:0 auto;width:100%}
 .page.active{display:block;animation:fadeUp .3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
@@ -132,19 +132,19 @@ textarea.fi{resize:vertical;min-height:70px}
 .page-desc{color:var(--muted);font-size:.85rem;margin-bottom:28px;line-height:1.6}
 
 /* ════════ CARD ════════ */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.03);overflow:hidden}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 
 /* ════════ STATS ════════ */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;text-align:center}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--primary);line-height:1}
 .stat-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
 
 /* ════════ TABLE ════════ */
-.tbl{width:100%;border-collapse:collapse;font-size:.83rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem;table-layout:fixed}
 .tbl th{padding:10px 12px;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--border);background:#F8F4EE;white-space:nowrap}
-.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;word-break:break-word}
 .tbl tr:hover td{background:#FDFAF4}
 
 /* ════════ BADGES ════════ */
@@ -171,7 +171,7 @@ textarea.fi{resize:vertical;min-height:70px}
 .word-btn:hover{border-color:var(--primary);color:var(--primary)}
 
 /* ════════ BARS ════════ */
-.bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}
+.bars-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 20px}
 .bar-row{}
 .bar-label{display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:3px}
 .bar-track{height:6px;background:#EDE8DC;border-radius:3px;overflow:hidden}
@@ -183,7 +183,7 @@ textarea.fi{resize:vertical;min-height:70px}
 .diag-tab.active{background:var(--ink);color:white;border-bottom-color:var(--primary)}
 
 /* ════════ TALENT GRID ════════ */
-.talent-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.talent-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .talent-card{background:#F8F4EE;border-radius:10px;padding:14px}
 .tc-title{font-weight:700;font-size:.85rem;margin-bottom:3px}
 .tc-desc{font-size:.73rem;color:var(--muted);margin-bottom:8px;line-height:1.4}
@@ -212,7 +212,7 @@ textarea.fi{resize:vertical;min-height:70px}
 .mapa-detail .mdb{padding:14px;font-size:.78rem;line-height:1.55}
 
 /* ════════ CORR CARDS ════════ */
-.corr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.corr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .corr-card{border-radius:12px;border:1px solid var(--border);overflow:hidden}
 .corr-card-header{padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
 .corr-card-header:hover{background:#F8F4EE}
@@ -281,10 +281,55 @@ textarea.fi{resize:vertical;min-height:70px}
 .gsl-item p{font-size:.82rem;color:var(--muted);margin-top:6px;line-height:1.6}
 @media(max-width:768px){.guide-step-grid,.guide-info-grid{grid-template-columns:1fr}}
 @media print{
-  .app-header,.app-nav,.btn,.modal-bg,.btn-row{display:none!important}
+  .app-header,.app-nav,.btn,.modal-bg,.btn-row,.sync-bar{display:none!important}
   .page{display:block!important;padding:0}
   body{background:white}
 }
+
+/* ════ VISUAL EDIT MODE ════ */
+.edit-toolbar{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:var(--ink);color:white;border-radius:14px;
+  padding:10px 16px;display:none;align-items:center;gap:10px;
+  z-index:9000;box-shadow:0 8px 32px rgba(0,0,0,.4);
+  font-family:'DM Mono',monospace;font-size:.72rem;
+  flex-wrap:wrap;max-width:90vw;justify-content:center;
+}
+.edit-toolbar.show{display:flex}
+.et-label{color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;font-size:.63rem}
+.et-btn{padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:white;cursor:pointer;font-family:inherit;font-size:.72rem;transition:all .2s;white-space:nowrap}
+.et-btn:hover{background:rgba(255,255,255,.18)}
+.et-btn.active{background:var(--primary);border-color:var(--primary)}
+.et-sep{width:1px;height:24px;background:rgba(255,255,255,.15)}
+.et-input{width:54px;padding:5px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:white;font-family:inherit;font-size:.72rem;text-align:center}
+
+/* Editable element highlight */
+body.edit-mode .card,
+body.edit-mode .btn,
+body.edit-mode .stats-grid,
+body.edit-mode .corr-grid,
+body.edit-mode [class*="grid"]{
+  outline:2px dashed rgba(30,92,46,.3);
+  outline-offset:2px;
+  cursor:pointer!important;
+}
+body.edit-mode .card:hover,
+body.edit-mode .btn:hover{
+  outline:2px solid var(--primary)!important;
+  outline-offset:3px;
+}
+body.edit-mode .selected-el{
+  outline:3px solid var(--primary)!important;
+  outline-offset:3px;
+  box-shadow:0 0 0 6px rgba(30,92,46,.15)!important;
+}
+.edit-mode-banner{
+  background:var(--primary);color:white;
+  text-align:center;padding:7px;
+  font-size:.72rem;font-family:'DM Mono',monospace;
+  letter-spacing:.06em;display:none;
+}
+.edit-mode-banner.show{display:block}
 
 /* ════════ EMPTY STATE ════════ */
 .empty{text-align:center;padding:52px 24px;color:var(--muted)}
@@ -506,6 +551,10 @@ textarea.fi{resize:vertical;min-height:70px}
 
 <!-- ════════ MAIN APP ════════ -->
 <div id="app">
+  <div class="edit-mode-banner" id="edit-mode-banner">
+    ✏️ VISUAL EDIT MODE — <span data-lang="en">Click any element to select and adjust it. Use the toolbar below.</span><span data-lang="pt">Clique em qualquer elemento para selecionar e ajustar. Use a barra abaixo.</span>
+    &nbsp;·&nbsp; <button onclick="exitEditMode()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;padding:2px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:.72rem">✕ <span data-lang="en">Exit</span><span data-lang="pt">Sair</span></button>
+  </div>
   <div id="admin-banner" class="admin-banner" style="display:none">
     ⚡ INNOFACTURY ADMIN MODE — <span id="admin-viewing">Viewing all tenants</span>
   </div>
@@ -561,7 +610,7 @@ textarea.fi{resize:vertical;min-height:70px}
       <div id="plan-usage-content"></div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px">
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px">
       <div class="card" style="text-align:center;cursor:pointer;transition:transform .2s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''" onclick="irParaDiagnostico('lider')">
         <div style="font-size:2.2rem;margin-bottom:8px">🎯</div>
         <div style="font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:700;margin-bottom:5px">
@@ -613,7 +662,7 @@ textarea.fi{resize:vertical;min-height:70px}
     <!-- REGISTER FORM -->
     <div class="card" id="form-lider-card">
       <div class="card-title" id="form-lider-titulo">➕ <span data-lang="en">Register Management Position</span><span data-lang="pt">Cadastrar Cargo de Gestão</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
         <div class="fg">
           <label><span data-lang="en">Manager's full name</span><span data-lang="pt">Nome completo do gestor</span></label>
           <input class="fi" id="fl-nome" oninput="validarNomeInput(this)" placeholder="Ex: Ana Souza">
@@ -627,7 +676,7 @@ textarea.fi{resize:vertical;min-height:70px}
           <select class="fi" id="fl-cargo"><option value="">—</option></select>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
         <div class="fg">
           <label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label>
           <select class="fi" id="fl-area"><option value="">—</option></select>
@@ -660,7 +709,7 @@ textarea.fi{resize:vertical;min-height:70px}
     <div id="alerta-cad" class="alert"></div>
     <div class="card">
       <div class="card-title">👤 <span data-lang="en">Identification</span><span data-lang="pt">Identificação</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
         <div class="fg">
           <label><span data-lang="en">Full name</span><span data-lang="pt">Nome completo</span></label>
           <input class="fi" id="f-nome" placeholder="Ex: João Silva" oninput="validarNomeInput(this)">
@@ -674,7 +723,7 @@ textarea.fi{resize:vertical;min-height:70px}
           </div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px">
         <div class="fg"><label><span data-lang="en">Position</span><span data-lang="pt">Cargo</span></label><select class="fi" id="f-cargo"><option value="">—</option></select></div>
         <div class="fg"><label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label><select class="fi" id="f-area"><option value="">—</option></select></div>
       </div>
@@ -805,6 +854,19 @@ textarea.fi{resize:vertical;min-height:70px}
     <div class="page-title">⚙️ <span data-lang="en">Settings</span><span data-lang="pt">Configurações</span></div>
     <p class="page-desc"><span data-lang="en">Customize your workspace — branding, hierarchy and areas.</span><span data-lang="pt">Personalize seu espaço — marca, hierarquia e áreas.</span></p>
     <div id="alert-settings" class="alert"></div>
+
+    <!-- VISUAL EDITOR CARD -->
+    <div class="card" style="border:2px solid var(--primary-light)">
+      <div class="card-title">✏️ <span data-lang="en">Visual Layout Editor</span><span data-lang="pt">Editor Visual de Layout</span></div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+        <span data-lang="en">Enter visual edit mode to click and adjust any element — padding, gap, font size, columns and margins — without touching the code.</span>
+        <span data-lang="pt">Entre no modo de edição visual para clicar e ajustar qualquer elemento — padding, gap, tamanho de fonte, colunas e margens — sem tocar no código.</span>
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" onclick="enterEditMode()">✏️ <span data-lang="en">Enter Edit Mode</span><span data-lang="pt">Entrar em Modo de Edição</span></button>
+        <button class="btn btn-outline btn-sm" onclick="resetAllLayout()">↺ <span data-lang="en">Reset all layout</span><span data-lang="pt">Resetar todo o layout</span></button>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-title">🏢 <span data-lang="en">Company Branding</span><span data-lang="pt">Identidade da Empresa</span></div>
@@ -1187,6 +1249,51 @@ textarea.fi{resize:vertical;min-height:70px}
       </div>
     </div>
   </div>
+</div>
+
+<!-- ══ EDIT TOOLBAR ══ -->
+<div class="edit-toolbar" id="edit-toolbar">
+  <span class="et-label" id="et-selected-label">
+    <span data-lang="en">Click element</span><span data-lang="pt">Clique no elemento</span>
+  </span>
+  <div class="et-sep"></div>
+
+  <span class="et-label">Padding</span>
+  <button class="et-btn" onclick="adjustProp('padding','decrease')">− P</button>
+  <input class="et-input" id="et-padding" value="20" onchange="setProp('padding',this.value+'px')">
+  <button class="et-btn" onclick="adjustProp('padding','increase')">+ P</button>
+
+  <div class="et-sep"></div>
+  <span class="et-label">Gap</span>
+  <button class="et-btn" onclick="adjustProp('gap','decrease')">− G</button>
+  <input class="et-input" id="et-gap" value="12" onchange="setProp('gap',this.value+'px')">
+  <button class="et-btn" onclick="adjustProp('gap','increase')">+ G</button>
+
+  <div class="et-sep"></div>
+  <span class="et-label">Font</span>
+  <button class="et-btn" onclick="adjustProp('fontSize','decrease')">− F</button>
+  <input class="et-input" id="et-font" value="14" onchange="setProp('fontSize',this.value+'px')">
+  <button class="et-btn" onclick="adjustProp('fontSize','increase')">+ F</button>
+
+  <div class="et-sep"></div>
+  <span class="et-label">Width</span>
+  <select class="et-input" id="et-cols" onchange="setCols(this.value)" style="width:80px">
+    <option value="">— cols</option>
+    <option value="1">1 col</option>
+    <option value="2">2 cols</option>
+    <option value="3">3 cols</option>
+    <option value="4">4 cols</option>
+  </select>
+
+  <div class="et-sep"></div>
+  <span class="et-label">Margin</span>
+  <button class="et-btn" onclick="adjustProp('marginBottom','decrease')">− M</button>
+  <button class="et-btn" onclick="adjustProp('marginBottom','increase')">+ M</button>
+
+  <div class="et-sep"></div>
+  <button class="et-btn" onclick="resetEl()" style="color:#ff8080">↺ <span data-lang="en">Reset</span><span data-lang="pt">Resetar</span></button>
+  <button class="et-btn active" onclick="saveLayout()">💾 <span data-lang="en">Save Layout</span><span data-lang="pt">Salvar Layout</span></button>
+  <button class="et-btn" onclick="exitEditMode()">✕ <span data-lang="en">Exit</span><span data-lang="pt">Sair</span></button>
 </div>
 
 <!-- ══ MODAL ══ -->
@@ -2404,6 +2511,168 @@ function renderHierarquiaVisual(){
   wrap.innerHTML = roots.map(r=>buildNode(r,0)).join('') || 
     '<div style="color:var(--muted);font-size:.83rem;padding:12px">No top-level positions found.</div>';
 }
+
+// ════════════════════════════════════════════════════════
+// VISUAL EDIT MODE
+// ════════════════════════════════════════════════════════
+let editMode = false;
+let selectedEl = null;
+let layoutOverrides = JSON.parse(localStorage.getItem('pda_layout') || '{}');
+
+function enterEditMode(){
+  editMode = true;
+  document.body.classList.add('edit-mode');
+  document.getElementById('edit-mode-banner').classList.add('show');
+  document.getElementById('edit-toolbar').classList.add('show');
+  // Apply saved overrides
+  applyLayoutOverrides();
+  // Add click listeners to all editable elements
+  document.querySelectorAll('.card,.btn,.stat-card,.corr-card,.guide-step-card,.gi-card,.talent-card,[class*="grid"],[class*="row"]').forEach(el => {
+    el.addEventListener('click', onEditClick, true);
+  });
+  // Navigate to home to see elements
+  showPage('inicio', document.querySelector('.nav-btn'));
+  showAlert('alert-settings','✏️ Edit mode active! Click any element to select and adjust it.','info');
+}
+
+function exitEditMode(){
+  editMode = false;
+  document.body.classList.remove('edit-mode');
+  document.getElementById('edit-mode-banner').classList.remove('show');
+  document.getElementById('edit-toolbar').classList.remove('show');
+  if(selectedEl) { selectedEl.classList.remove('selected-el'); selectedEl = null; }
+  document.querySelectorAll('.card,.btn,.stat-card,.corr-card,.guide-step-card,.gi-card,.talent-card,[class*="grid"],[class*="row"]').forEach(el => {
+    el.removeEventListener('click', onEditClick, true);
+  });
+}
+
+function onEditClick(e){
+  if(!editMode) return;
+  e.stopPropagation();
+  e.preventDefault();
+  // Deselect previous
+  if(selectedEl) selectedEl.classList.remove('selected-el');
+  selectedEl = e.currentTarget;
+  selectedEl.classList.add('selected-el');
+  // Update toolbar values
+  const cs = window.getComputedStyle(selectedEl);
+  const pad = parseInt(cs.padding)||0;
+  const gap = parseInt(cs.gap)||0;
+  const fs = parseInt(cs.fontSize)||14;
+  const mb = parseInt(cs.marginBottom)||0;
+  document.getElementById('et-padding').value = pad;
+  document.getElementById('et-gap').value = gap;
+  document.getElementById('et-font').value = fs;
+  // Label
+  const tag = selectedEl.tagName.toLowerCase();
+  const cls = selectedEl.className.split(' ').slice(0,2).join('.');
+  document.getElementById('et-selected-label').textContent = `<${tag}> .${cls}`;
+}
+
+function getNumPx(prop){
+  if(!selectedEl) return 0;
+  return parseInt(window.getComputedStyle(selectedEl)[prop])||0;
+}
+
+function adjustProp(prop, dir){
+  if(!selectedEl) return;
+  const step = prop==='fontSize'?1:4;
+  const cur = getNumPx(prop);
+  const newVal = dir==='increase'? cur+step : Math.max(0,cur-step);
+  selectedEl.style[prop] = newVal+'px';
+  if(prop==='padding') document.getElementById('et-padding').value=newVal;
+  if(prop==='gap') document.getElementById('et-gap').value=newVal;
+  if(prop==='fontSize') document.getElementById('et-font').value=newVal;
+  saveElOverride(prop, newVal+'px');
+}
+
+function setProp(prop, val){
+  if(!selectedEl) return;
+  selectedEl.style[prop] = val;
+  saveElOverride(prop, val);
+}
+
+function setCols(cols){
+  if(!selectedEl || !cols) return;
+  selectedEl.style.gridTemplateColumns = 'repeat('+cols+',minmax(0,1fr))';
+  saveElOverride('gridTemplateColumns','repeat('+cols+',minmax(0,1fr))');
+}
+
+function resetEl(){
+  if(!selectedEl) return;
+  ['padding','gap','fontSize','marginBottom','gridTemplateColumns','margin'].forEach(p=>{
+    selectedEl.style[p]='';
+  });
+  // Remove from overrides
+  const id = getElId(selectedEl);
+  if(id && layoutOverrides[id]) { delete layoutOverrides[id]; saveLayoutStore(); }
+}
+
+function resetAllLayout(){
+  if(!confirm('Reset ALL layout customizations?')) return;
+  layoutOverrides = {};
+  localStorage.removeItem('pda_layout');
+  // Remove all inline styles from editable elements
+  document.querySelectorAll('.card,.btn,.stat-card,.corr-card,.guide-step-card,.gi-card,.talent-card,[class*="grid"]').forEach(el=>{
+    ['padding','gap','fontSize','marginBottom','gridTemplateColumns'].forEach(p=>el.style[p]='');
+  });
+  showAlert('alert-settings','Layout reset to defaults.','info');
+}
+
+function getElId(el){
+  // Create a stable identifier: tag + class + position among siblings
+  if(el.id) return el.id;
+  const tag=el.tagName.toLowerCase();
+  const cls=el.className.split(' ').slice(0,2).join('-').replace(/[^a-z0-9-]/gi,'');
+  const parent=el.parentElement;
+  if(!parent) return cls;
+  const idx=Array.from(parent.children).indexOf(el);
+  const parentCls=parent.className.split(' ')[0].replace(/[^a-z0-9-]/gi,'');
+  return `${tag}-${cls}-in-${parentCls}-${idx}`;
+}
+
+function saveElOverride(prop, val){
+  if(!selectedEl) return;
+  const id = getElId(selectedEl);
+  if(!layoutOverrides[id]) layoutOverrides[id]={};
+  layoutOverrides[id][prop]=val;
+  saveLayoutStore();
+}
+
+function saveLayoutStore(){
+  localStorage.setItem('pda_layout', JSON.stringify(layoutOverrides));
+}
+
+function saveLayout(){
+  saveLayoutStore();
+  showAlert('alert-settings','✅ Layout saved! Will apply on every page load.','success');
+  exitEditMode();
+  showPage('settings', document.getElementById('nav-settings'));
+}
+
+function applyLayoutOverrides(){
+  Object.entries(layoutOverrides).forEach(([id, props])=>{
+    // Try by element id first
+    let el = document.getElementById(id);
+    if(!el){
+      // Try to find by reconstructed selector
+      const parts = id.split('-in-');
+      if(parts.length===2){
+        const [elPart, parentPart] = parts;
+        const idx = parseInt(parentPart.split('-').pop())||0;
+        const parentCls = parentPart.replace(/-\d+$/,'');
+        const parent = document.querySelector('.'+parentCls);
+        if(parent) el = parent.children[idx];
+      }
+    }
+    if(el){
+      Object.entries(props).forEach(([prop,val])=>{ el.style[prop]=val; });
+    }
+  });
+}
+
+// Apply overrides on load
+window.addEventListener('load', ()=>{ setTimeout(applyLayoutOverrides, 500); });
 
 // ════════════════════════════════════════════════════════
 // INIT
