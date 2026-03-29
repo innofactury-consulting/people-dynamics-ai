@@ -511,7 +511,7 @@ textarea.fi{resize:vertical;min-height:70px}
 
   <nav class="app-nav" id="app-nav">
     <button class="nav-btn active" onclick="showPage('inicio',this)">🏠 <span data-lang="en">Home</span><span data-lang="pt">Início</span></button>
-    <button class="nav-btn" onclick="showPage('lideres',this)">👥 <span data-lang="en">Leaders</span><span data-lang="pt">Líderes</span> 🔒</button>
+    <button class="nav-btn" onclick="showPage('lideres',this)">🏗️ <span data-lang="en">Mgmt Hierarchy</span><span data-lang="pt">Hierarquia de Gestão</span> 🔒</button>
     <button class="nav-btn" onclick="showPage('cadastro',this)">✏️ <span data-lang="en">Assessment</span><span data-lang="pt">Diagnóstico</span></button>
     <button class="nav-btn" onclick="showPage('mapa',this)">🗺️ <span data-lang="en">Team Map</span><span data-lang="pt">Mapa</span> 🔒</button>
     <button class="nav-btn" onclick="showPage('painel',this)">📊 <span data-lang="en">Dashboard</span><span data-lang="pt">Painel</span> 🔒</button>
@@ -569,26 +569,60 @@ textarea.fi{resize:vertical;min-height:70px}
 
   <!-- ══ LEADERS ══ -->
   <div class="page" id="page-lideres">
-    <div class="page-title"><span data-lang="en">Leaders Registry</span><span data-lang="pt">Cadastro de Líderes</span></div>
-    <p class="page-desc"><span data-lang="en">Manage the official leader list. Only managers can add, edit or remove.</span><span data-lang="pt">Gerencie a lista oficial de líderes. Apenas gestores podem cadastrar, editar ou excluir.</span></p>
+    <div class="page-title">🏗️ <span data-lang="en">Management Hierarchy</span><span data-lang="pt">Hierarquia de Gestão</span></div>
+    <p class="page-desc">
+      <span data-lang="en">Register management positions and define the reporting structure. This hierarchy will be used in assessments to link leaders and collaborators.</span>
+      <span data-lang="pt">Cadastre os cargos de gestão e defina a estrutura de reporte. Esta hierarquia será utilizada nos diagnósticos para vincular líderes e colaboradores.</span>
+    </p>
     <div id="alert-lid" class="alert"></div>
+
+    <!-- HIERARCHY VISUALIZATION -->
+    <div class="card">
+      <div class="card-title">🌳 <span data-lang="en">Current Hierarchy Structure</span><span data-lang="pt">Estrutura Hierárquica Atual</span></div>
+      <div id="hierarquia-visual" style="padding:8px 0"></div>
+    </div>
+
+    <!-- REGISTER FORM -->
     <div class="card" id="form-lider-card">
-      <div class="card-title" id="form-lider-titulo">➕ <span data-lang="en">New Leader</span><span data-lang="pt">Novo Líder</span></div>
+      <div class="card-title" id="form-lider-titulo">➕ <span data-lang="en">Register Management Position</span><span data-lang="pt">Cadastrar Cargo de Gestão</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-        <div class="fg"><label><span data-lang="en">Full name</span><span data-lang="pt">Nome completo</span></label><input class="fi" id="fl-nome" oninput="validarNomeInput(this)"></div>
-        <div class="fg"><label><span data-lang="en">Position</span><span data-lang="pt">Cargo</span></label><select class="fi" id="fl-cargo"><option value="">—</option></select></div>
+        <div class="fg">
+          <label><span data-lang="en">Manager's full name</span><span data-lang="pt">Nome completo do gestor</span></label>
+          <input class="fi" id="fl-nome" oninput="validarNomeInput(this)" placeholder="Ex: Ana Souza">
+          <span style="font-size:.7rem;color:var(--muted);margin-top:3px">
+            <span data-lang="en">First and last name required</span>
+            <span data-lang="pt">Primeiro e último nome obrigatórios</span>
+          </span>
+        </div>
+        <div class="fg">
+          <label><span data-lang="en">Management position</span><span data-lang="pt">Cargo de gestão</span></label>
+          <select class="fi" id="fl-cargo"><option value="">—</option></select>
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-        <div class="fg"><label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label><select class="fi" id="fl-area"><option value="">—</option></select></div>
-        <div class="fg"><label><span data-lang="en">Direct Superior</span><span data-lang="pt">Superior Direto</span></label><select class="fi" id="fl-superior"><option value="">— <span data-lang="en">Top of hierarchy</span><span data-lang="pt">Topo da hierarquia</span> —</option></select></div>
+        <div class="fg">
+          <label><span data-lang="en">Area / Sector</span><span data-lang="pt">Área / Setor</span></label>
+          <select class="fi" id="fl-area"><option value="">—</option></select>
+        </div>
+        <div class="fg">
+          <label><span data-lang="en">Reports to (direct superior)</span><span data-lang="pt">Reporta a (superior direto)</span></label>
+          <select class="fi" id="fl-superior">
+            <option value="">— <span data-lang="en">Top of hierarchy (no superior)</span><span data-lang="pt">Topo da hierarquia (sem superior)</span> —</option>
+          </select>
+        </div>
       </div>
       <input type="hidden" id="fl-edit-id">
       <div class="btn-row">
-        <button class="btn btn-primary btn-sm" onclick="salvarLider()">💾 <span data-lang="en">Save</span><span data-lang="pt">Salvar</span></button>
+        <button class="btn btn-primary btn-sm" onclick="salvarLider()">💾 <span data-lang="en">Save position</span><span data-lang="pt">Salvar cargo</span></button>
         <button class="btn btn-outline btn-sm" onclick="cancelarEdicaoLider()">↩ <span data-lang="en">Cancel</span><span data-lang="pt">Cancelar</span></button>
       </div>
     </div>
-    <div class="card"><div class="card-title">📋 <span data-lang="en">Registered Leaders</span><span data-lang="pt">Líderes Cadastrados</span></div><div id="lista-lideres-wrap"></div></div>
+
+    <!-- LIST -->
+    <div class="card">
+      <div class="card-title">📋 <span data-lang="en">Management Positions Registered</span><span data-lang="pt">Cargos de Gestão Cadastrados</span></div>
+      <div id="lista-lideres-wrap"></div>
+    </div>
   </div>
 
   <!-- ══ ASSESSMENT ══ -->
@@ -649,6 +683,36 @@ textarea.fi{resize:vertical;min-height:70px}
         </div>
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><button onclick="switchTab('disc')" class="btn btn-outline btn-sm"><span data-lang="en">Next: DISC →</span><span data-lang="pt">Próximo: DISC →</span></button></div>
       </div>
+
+      <!-- SELF-KNOWLEDGE — only in Temperament tab -->
+      <div id="tab-autoconhecimento" style="padding:20px 0 8px;border-top:2px solid var(--border);margin-top:0">
+        <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px">
+          ✨ <span data-lang="en">Self-knowledge</span><span data-lang="pt">Autoconhecimento</span>
+        </div>
+        <div class="talent-grid">
+          <div class="talent-card">
+            <div class="tc-title">⚡ <span data-lang="en">Natural Talent</span><span data-lang="pt">Talento Natural</span></div>
+            <div class="tc-desc"><span data-lang="en">What has always been easy for you? What do you do naturally that others find difficult?</span><span data-lang="pt">O que sempre foi fácil para você? O que você faz naturalmente e outros acham difícil?</span></div>
+            <textarea class="fi" id="f-talento" rows="3"></textarea>
+          </div>
+          <div class="talent-card">
+            <div class="tc-title">🪞 <span data-lang="en">How others see me</span><span data-lang="pt">Como me veem</span></div>
+            <div class="tc-desc"><span data-lang="en">What behavior of yours is most noticed by the group?</span><span data-lang="pt">Qual comportamento seu é mais notado pelo grupo?</span></div>
+            <textarea class="fi" id="f-caricatura" rows="3"></textarea>
+          </div>
+          <div class="talent-card">
+            <div class="tc-title">😤 <span data-lang="en">My Allergy</span><span data-lang="pt">Minha Alergia</span></div>
+            <div class="tc-desc"><span data-lang="en">What deeply irritates you in others at work?</span><span data-lang="pt">O que te irrita profundamente no outro no ambiente de trabalho?</span></div>
+            <textarea class="fi" id="f-alergia" rows="3"></textarea>
+          </div>
+          <div class="talent-card">
+            <div class="tc-title">🎯 <span data-lang="en">My Task</span><span data-lang="pt">Minha Tarefa</span></div>
+            <div class="tc-desc"><span data-lang="en">What can you do to develop and balance your profile?</span><span data-lang="pt">O que você pode fazer para se desenvolver e equilibrar seu perfil?</span></div>
+            <textarea class="fi" id="f-tarefa" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
       <div id="tab-disc" style="display:none;padding:20px 0 8px">
         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
           <span style="font-size:.7rem;padding:3px 9px;border-radius:8px;background:#FDECEA;color:#C0392B;font-weight:700">D — <span data-lang="en">Dominance</span><span data-lang="pt">Dominância</span></span>
@@ -670,15 +734,6 @@ textarea.fi{resize:vertical;min-height:70px}
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">✨ <span data-lang="en">Self-knowledge</span><span data-lang="pt">Autoconhecimento</span></div>
-      <div class="talent-grid">
-        <div class="talent-card"><div class="tc-title">⚡ <span data-lang="en">Natural Talent</span><span data-lang="pt">Talento Natural</span></div><div class="tc-desc"><span data-lang="en">What has always been easy for you?</span><span data-lang="pt">O que sempre foi fácil para você?</span></div><textarea class="fi" id="f-talento"></textarea></div>
-        <div class="talent-card"><div class="tc-title">🪞 <span data-lang="en">How others see me</span><span data-lang="pt">Como me veem</span></div><div class="tc-desc"><span data-lang="en">What behavior is most noticed by others?</span><span data-lang="pt">Qual comportamento seu é mais notado pelo grupo?</span></div><textarea class="fi" id="f-caricatura"></textarea></div>
-        <div class="talent-card"><div class="tc-title">😤 <span data-lang="en">My Allergy</span><span data-lang="pt">Minha Alergia</span></div><div class="tc-desc"><span data-lang="en">What irritates you deeply at work?</span><span data-lang="pt">O que te irrita profundamente no trabalho?</span></div><textarea class="fi" id="f-alergia"></textarea></div>
-        <div class="talent-card"><div class="tc-title">🎯 <span data-lang="en">My Task</span><span data-lang="pt">Minha Tarefa</span></div><div class="tc-desc"><span data-lang="en">What can you do to develop your profile?</span><span data-lang="pt">O que você pode fazer para se desenvolver?</span></div><textarea class="fi" id="f-tarefa"></textarea></div>
-      </div>
-    </div>
     <div class="btn-row">
       <button class="btn btn-primary" onclick="salvar()">💾 <span data-lang="en">Save Assessment</span><span data-lang="pt">Salvar Diagnóstico</span></button>
       <button class="btn btn-outline" onclick="limpar()">↩ <span data-lang="en">Clear</span><span data-lang="pt">Limpar</span></button>
@@ -809,7 +864,7 @@ textarea.fi{resize:vertical;min-height:70px}
   <div style="background:var(--surface);border-radius:16px;padding:36px;max-width:360px;width:100%;text-align:center">
     <div style="font-size:2rem;margin-bottom:10px">🔐</div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;margin-bottom:8px"><span data-lang="en">Manager Area</span><span data-lang="pt">Área do Gestor</span></div>
-    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px"><span data-lang="en">Enter your manager password to continue.</span><span data-lang="pt">Digite a senha de gestor para continuar.</span></div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px"><span data-lang="en">Enter the manager password to continue.</span><span data-lang="pt">Digite a senha <strong>people2026</strong> para continuar.</span></div>
     <div id="alerta-senha" class="alert"></div>
     <input class="fi" id="input-senha" type="password" style="margin-bottom:12px;text-align:center;font-size:1rem" onkeydown="if(event.key==='Enter')verificarSenha()">
     <button class="btn btn-primary" onclick="verificarSenha()"><span data-lang="en">Enter →</span><span data-lang="pt">Entrar →</span></button>
@@ -825,7 +880,7 @@ textarea.fi{resize:vertical;min-height:70px}
 const SUPABASE_URL = 'https://kpvqszrrdnsvzppjlfnt.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_R1bzxnORCKbcVtVjfRZ_MQ_S5vB1gFn';
 const INNOFACTURY_ADMIN_EMAIL = 'contato@innofactury.com';
-const MANAGER_PASSWORD = 'manager2026'; // local password for restricted areas
+const MANAGER_PASSWORD = 'people2026'; // local password for restricted areas
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -1320,7 +1375,7 @@ function showPage(name,btn){
   if(name==='mapa') renderMapa();
   if(name==='selecao') renderSelecao();
   if(name==='cadastro') updateLiderSelect();
-  if(name==='lideres'){renderListaLideres();updateSuperiorSelect();}
+  if(name==='lideres'){renderListaLideres();updateSuperiorSelect();renderHierarquiaVisual();}
   if(name==='settings') loadSettings();
   if(name==='admin') renderAdmin();
   if(name==='inicio') renderHome();
@@ -1959,6 +2014,43 @@ function showAlert(id,msg,type){
   const el=document.getElementById(id);if(!el)return;
   el.className=`alert alert-${type} show`;el.textContent=msg;
   setTimeout(()=>el.classList.remove('show'),5000);
+}
+
+// ════════════════════════════════════════════════════════
+// HIERARCHY VISUALIZATION
+// ════════════════════════════════════════════════════════
+function renderHierarquiaVisual(){
+  const wrap = document.getElementById('hierarquia-visual');
+  if(!wrap) return;
+  if(!lideresCad.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:.84rem"><span data-lang=\"en\">No management positions registered yet. Use the form below to start building your hierarchy.</span><span data-lang=\"pt\">Nenhum cargo de gestão cadastrado ainda. Use o formulário abaixo para começar a construir sua hierarquia.</span></div>';
+    return;
+  }
+  // Build tree
+  const roots = lideresCad.filter(l=>!l.superior_id);
+  const children = id => lideresCad.filter(l=>l.superior_id===id);
+  const colors = ['#0D3318','#1E5C2E','#2E7D42','#3DAD58','#27AE60','#52C97A','#7ED89A'];
+  
+  function buildNode(l, depth){
+    const color = colors[Math.min(depth, colors.length-1)];
+    const kids = children(l.id);
+    return `<div style="margin-left:${depth*24}px;margin-bottom:8px">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:white;border:2px solid ${color};border-radius:10px;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+        ${depth===0?'👑':depth===1?'🎯':depth===2?'📋':'🔹'}
+        <div>
+          <div style="font-weight:700;font-size:.85rem;color:${color}">${l.nome}</div>
+          <div style="font-size:.7rem;color:var(--muted)">${l.cargo||''}${l.area?' · '+l.area:''}</div>
+        </div>
+        <div style="display:flex;gap:4px;margin-left:8px">
+          <button onclick="editarLider('${l.id}')" style="padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:white;cursor:pointer;font-size:.68rem;font-family:inherit">✏️</button>
+          <button onclick="excluirLider('${l.id}')" style="padding:3px 8px;border-radius:5px;border:1px solid #fcc;background:#FFF0F0;color:var(--red);cursor:pointer;font-size:.68rem;font-family:inherit">✕</button>
+        </div>
+      </div>
+      ${kids.map(k=>buildNode(k,depth+1)).join('')}
+    </div>`;
+  }
+  wrap.innerHTML = roots.map(r=>buildNode(r,0)).join('') || 
+    '<div style="color:var(--muted);font-size:.83rem;padding:12px">No top-level positions found.</div>';
 }
 
 // ════════════════════════════════════════════════════════
