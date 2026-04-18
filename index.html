@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1248,15 +1248,20 @@ Retorne SOMENTE JSON válido sem markdown:
   const apiKey=localStorage.getItem('pda_apikey')||'';
   if(!apiKey){showAl('al-planos','Configure sua API Key em ⚙️ Configurações → campo Anthropic API Key → Salvar tudo.','warn');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch(SURL+'/functions/v1/gerar-pdi',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SKEY},
+      body:JSON.stringify({prompt,apiKey})
+    });
+    if(!res.ok){const err=await res.text();showAl('al-planos','Erro na Edge Function: '+err,'err');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
     const data=await res.json();
-    if(data.error){showAl('al-planos','Erro da API: '+data.error.message,'err');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
+    if(data.error){showAl('al-planos','Erro da API: '+(data.error.message||JSON.stringify(data.error)),'err');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
     const txt=data.content.map(b=>b.text||'').join('');
     const plan=JSON.parse(txt.replace(/```json|```/g,'').trim());
     await saveDevPlan(p.id,plan,{});
     renderPlanResult(plan,{});
     showAl('al-planos','✅ PDI gerado e salvo!','ok');
-  }catch(e){showAl('al-planos','Erro: '+e.message,'err');}
+  }catch(e){showAl('al-planos','Erro: '+e.message+'. Verifique se a Edge Function foi deployada.','err');}
   btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';
 }
 function renderPlanResult(plan,progress){
