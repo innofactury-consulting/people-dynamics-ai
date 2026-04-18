@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -547,14 +547,16 @@ textarea.fi{resize:vertical;min-height:68px}
     <div class="card">
       <div class="card-title">👤 Conta</div>
       <div class="fg"><label>Email</label><input class="fi" id="st-email" disabled style="background:#F0EBE0"></div>
-      <div class="fg"><label>Anthropic API Key (IA Planos)</label>
-  <input class="fi" id="st-apikey" type="password" placeholder="sk-ant-...">
-  <span style="font-size:.7rem;color:var(--muted);margin-top:3px;display:block">
-    Obtenha em <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--g)">console.anthropic.com</a> — salva apenas no seu navegador.
-  </span>
-</div>
+      <div class="fg">
+        <label>Anthropic API Key (IA Planos)</label>
+        <input class="fi" id="st-apikey" type="password" placeholder="sk-ant-...">
+        <span style="font-size:.7rem;color:var(--muted);margin-top:3px;display:block">Salva apenas no seu navegador. Obtenha em <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--g)">console.anthropic.com</a></span>
+      </div>
       <div class="fg"><label>Nova senha</label><input class="fi" id="st-pass" type="password" placeholder="••••••••"></div>
-      <div class="brow" style="margin-top:6px"><button class="btn btn-o btn-s" onclick="changePass()">Atualizar senha</button></div>
+      <div class="brow" style="margin-top:6px">
+        <button class="btn btn-p btn-s" onclick="saveBrand()">💾 Salvar tudo</button>
+        <button class="btn btn-o btn-s" onclick="changePass()">Atualizar senha</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1243,17 +1245,18 @@ ${corr?.desc||''}`:'' }
 
 Retorne SOMENTE JSON válido sem markdown:
 {"sumario":"2-3 frases sobre perfil e potencial","forcas":["força 1","força 2","força 3"],"areas":["área dev 1","área dev 2","área dev 3"],"mes1":{"tema":"tema","objetivo":"objetivo SMART","acoes":["ação 1","ação 2","ação 3"],"metrica":"como medir"},"mes2":{"tema":"tema","objetivo":"objetivo SMART","acoes":["ação 1","ação 2","ação 3"],"metrica":"como medir"},"mes3":{"tema":"tema","objetivo":"objetivo SMART","acoes":["ação 1","ação 2","ação 3"],"metrica":"como medir"},"paraLider":"orientação ao líder","papelNoTime":"papel ideal","mensagemChave":"frase motivacional"}`;
+  const apiKey=localStorage.getItem('pda_apikey')||'';
+  if(!apiKey){showAl('al-planos','Configure sua API Key em ⚙️ Configurações → campo Anthropic API Key → Salvar tudo.','warn');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
   try{
-    const apiKey=localStorage.getItem('pda_apikey')||'';
-if(!apiKey){showAl('al-planos','Configure sua API Key em ⚙️ Configurações primeiro.','warn');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
-const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
+    if(data.error){showAl('al-planos','Erro da API: '+data.error.message,'err');btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';return;}
     const txt=data.content.map(b=>b.text||'').join('');
     const plan=JSON.parse(txt.replace(/```json|```/g,'').trim());
     await saveDevPlan(p.id,plan,{});
     renderPlanResult(plan,{});
     showAl('al-planos','✅ PDI gerado e salvo!','ok');
-  }catch(e){showAl('al-planos','Erro ao gerar o plano. Tente novamente.','err');}
+  }catch(e){showAl('al-planos','Erro: '+e.message,'err');}
   btn.disabled=false;btn.textContent='🤖 Gerar PDI com IA';
 }
 function renderPlanResult(plan,progress){
@@ -1351,19 +1354,18 @@ function loadSettings(){
   document.getElementById('st-pick').value=TCFG.color||'#1E5C2E';
   document.getElementById('st-hier').value=(TCFG.hierarchy||[]).join('\n');
   document.getElementById('st-areas').value=(TCFG.areas||[]).join('\n');
-  const ak=localStorage.getItem('pda_apikey')||'';
-const el=document.getElementById('st-apikey');
-if(el)el.value=ak;
+  const akEl=document.getElementById('st-apikey');
+  if(akEl)akEl.value=localStorage.getItem('pda_apikey')||'';
 }
 async function saveBrand(){
   const name=document.getElementById('st-name').value.trim();
   const logo=document.getElementById('st-logo').value.trim();
   const color=document.getElementById('st-color').value.trim()||'#1E5C2E';
+  const akEl=document.getElementById('st-apikey');
+  if(akEl&&akEl.value.trim())localStorage.setItem('pda_apikey',akEl.value.trim());
   TCFG.name=name;TCFG.logo=logo;TCFG.color=color;
   await saveConfig({name,logo,color});applyBrand();showAl('al-st','✅ Identidade salva!','ok');
 }
-  const ak=document.getElementById('st-apikey').value.trim();
-if(ak)localStorage.setItem('pda_apikey',ak);
 async function saveHier(){
   const hier=document.getElementById('st-hier').value.trim().split('\n').filter(Boolean);
   const areas=document.getElementById('st-areas').value.trim().split('\n').filter(Boolean);
