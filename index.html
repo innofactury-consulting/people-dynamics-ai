@@ -267,7 +267,16 @@ select.fi{cursor:pointer}textarea.fi{resize:vertical;min-height:68px}
 
 <div id="app">
 <div class="sync"><span class="sdot2" id="sdot2"></span><span id="syncmsg">People Dynamics AI · by InnoFactury</span>
-  <button onclick="exportData()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.55);padding:1px 8px;border-radius:4px;cursor:pointer;font-size:.65rem;font-family:inherit">⬇ Export</button>
+  <div style="position:relative;display:inline-block">
+    <button onclick="toggleExportMenu()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.55);padding:1px 8px;border-radius:4px;cursor:pointer;font-size:.65rem;font-family:inherit">⬇ Exportar ▾</button>
+    <div id="export-menu" style="display:none;position:absolute;right:0;top:24px;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:210px;z-index:999;overflow:hidden">
+      <div style="padding:6px 12px;font-size:.63rem;font-weight:700;text-transform:uppercase;color:var(--muted);background:#F8F4EE;border-bottom:1px solid var(--bd)">Exportar</div>
+      <button onclick="exportPDFAll();toggleExportMenu()" style="display:block;width:100%;padding:9px 14px;text-align:left;border:none;background:#fff;cursor:pointer;font-family:inherit;font-size:.8rem;border-bottom:1px solid var(--bd);color:var(--ink)">📄 PDF — Todos os diagnósticos</button>
+      <button onclick="exportPDFCorr();toggleExportMenu()" style="display:block;width:100%;padding:9px 14px;text-align:left;border:none;background:#fff;cursor:pointer;font-family:inherit;font-size:.8rem;border-bottom:1px solid var(--bd);color:var(--ink)">🔗 PDF — Correlações líder-liderado</button>
+      <button onclick="exportPDIAll();toggleExportMenu()" style="display:block;width:100%;padding:9px 14px;text-align:left;border:none;background:#fff;cursor:pointer;font-family:inherit;font-size:.8rem;border-bottom:1px solid var(--bd);color:var(--ink)">🤖 PDF — Todos os PDIs</button>
+      <button onclick="exportData();toggleExportMenu()" style="display:block;width:100%;padding:9px 14px;text-align:left;border:none;background:#fff;cursor:pointer;font-family:inherit;font-size:.8rem;color:var(--ink)">📦 JSON — Backup completo</button>
+    </div>
+  </div>
 </div>
 <header class="hdr">
   <div class="hdr-brand">
@@ -489,7 +498,7 @@ select.fi{cursor:pointer}textarea.fi{resize:vertical;min-height:68px}
 
 <div class="mbg" id="modal-bg" onclick="closeModal()">
 <div class="modal" onclick="event.stopPropagation()">
-  <div class="mh"><div><div class="mname" id="m-nome"></div><div class="mmeta" id="m-meta"></div></div><button class="mclose" onclick="closeModal()">✕</button></div>
+  <div class="mh"><div><div class="mname" id="m-nome"></div><div class="mmeta" id="m-meta"></div></div><div style="display:flex;gap:6px"><button onclick="exportPersonPDF(currentModalId)" class="btn btn-o btn-s" style="font-size:.72rem;padding:4px 10px">📄 Exportar PDF</button><button class="mclose" onclick="closeModal()">✕</button></div></div>
   <div class="mbody" id="m-body"></div>
 </div>
 </div>
@@ -1203,7 +1212,8 @@ function renderPainel(){
     </div>
   </div>`).join('')+'</div>';
 }
-function openModal(id){
+let currentModalId=null;
+function openModal(id){currentModalId=id;
   const p=parts.find(x=>x.id===id);if(!p)return;
   const l=p.lider_direto_id?parts.find(x=>x.id===p.lider_direto_id):null;
   document.getElementById('m-nome').textContent=p.nome;
@@ -1410,7 +1420,215 @@ function tempBadge(t){if(!t||!TEMPS[t])return'';const{label,color,bg}=TEMPS[t];r
 function discBadge(d){if(!d||!DCOLORS[d])return'';return `<span class="badge" style="background:${DCOLORS[d]}18;color:${DCOLORS[d]}">${d}·${DLABELS[d]}</span>`;}
 function showAl(id,msg,type){const e=document.getElementById(id);if(!e)return;e.className=`al al-${type} show`;e.textContent=msg;setTimeout(()=>e.classList.remove('show'),5500);}
 function syncMsg(msg,state){const e=document.getElementById('syncmsg');const d=document.getElementById('sdot2');if(e)e.textContent=msg;if(d){d.className='sdot2';if(state==='syncing')d.classList.add('syncing');else if(state==='err')d.classList.add('err');}}
-function exportData(){const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),tenant:TCFG.name,participants:parts,plans:devPlans},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pda-${new Date().toISOString().slice(0,10)}.json`;a.click();}
+function toggleExportMenu(){const m=document.getElementById('export-menu');if(m)m.style.display=m.style.display==='none'?'block':'none';}
+document.addEventListener('click',e=>{const m=document.getElementById('export-menu');if(m&&!m.parentElement.contains(e.target))m.style.display='none';});
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),tenant:TCFG.name,participants:parts,plans:devPlans},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pda-${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+
+function buildPDFBase(titulo,subtitulo,corpoHTML){
+  const cor=TCFG.color||'#1E5C2E';
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+  <title>${titulo} — ${TCFG.name||'People Dynamics AI'}</title>
+  <style>
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#1a1a1a;margin:0;padding:0;font-size:13px;line-height:1.6}
+    .cover{background:${cor};color:#fff;padding:60px 50px;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end}
+    .cover h1{font-size:2rem;margin:0 0 6px;font-weight:700}
+    .cover h2{font-size:1.1rem;margin:0 0 12px;opacity:.75;font-weight:400}
+    .cover .meta{font-size:.78rem;opacity:.55;margin-top:8px}
+    .section{padding:28px 40px;border-bottom:1px solid #eee}
+    .person-header{display:flex;align-items:center;gap:16px;margin-bottom:18px;padding:16px 20px;background:#f8f4ee;border-radius:10px}
+    .avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0}
+    .person-name{font-size:1.15rem;font-weight:700;margin-bottom:3px}
+    .person-meta{font-size:.78rem;color:#666}
+    .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:.7rem;font-weight:700;margin:2px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+    .box{background:#f8f8f8;border-radius:8px;padding:12px 14px}
+    .box-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:5px}
+    .bar-row{margin-bottom:6px}
+    .bar-label{display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:2px}
+    .bar-track{height:5px;background:#e5e5e5;border-radius:3px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:3px}
+    .corr-box{border-radius:8px;padding:14px 16px;margin-bottom:12px}
+    .corr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+    .corr-item{background:#fff;border-radius:6px;padding:8px 10px}
+    .corr-item-title{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+    .corr-item-body{font-size:.75rem;line-height:1.5;color:#333}
+    .plan-month{border-left:4px solid ${cor};padding:12px 14px;margin-bottom:10px;background:#fafafa;border-radius:0 8px 8px 0}
+    .plan-month h4{margin:0 0 4px;font-size:.9rem}
+    .plan-month .obj{font-size:.77rem;color:#666;margin-bottom:8px}
+    .plan-action{font-size:.8rem;margin-bottom:5px;padding-left:14px;position:relative}
+    .plan-action::before{content:'→';position:absolute;left:0;color:${cor};font-weight:700}
+    .synergy-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .synergy-track{flex:1;height:6px;background:#e5e5e5;border-radius:3px;overflow:hidden}
+    .synergy-fill{height:100%;border-radius:3px}
+    h3{font-size:1rem;font-weight:700;color:${cor};border-bottom:2px solid ${cor};padding-bottom:4px;margin:0 0 14px}
+    .page-break{page-break-before:always}
+    @media print{.no-print{display:none}.page-break{page-break-before:always}}
+    .print-btn{position:fixed;top:16px;right:16px;background:${cor};color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:700;z-index:999}
+  </style>
+  </head><body>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+  <div class="cover">
+    <div style="font-size:.8rem;opacity:.5;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em">People Dynamics AI · by InnoFactury</div>
+    <h1>${titulo}</h1>
+    <h2>${TCFG.name||'Minha Empresa'}</h2>
+    <div class="meta">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})} · ${subtitulo}</div>
+  </div>
+  ${corpoHTML}
+  </body></html>`;
+}
+
+function personDiagHtml(p){
+  const td=TEMPS[p.temperamento]||{};
+  const tsc=p.scores||{},dsc=p.disc_scores||{};
+  const ini=p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+  const col=TCOLORS[p.temperamento]||'#888';
+  const tBars=TKEYS.map(t=>{const pct=Math.round(((tsc[t]||0)/15)*100);return `<div class="bar-row"><div class="bar-label"><span style="font-weight:600;color:${TCOLORS[t]}">${TLABELS[t]}</span><span style="color:${TCOLORS[t]};font-weight:700">${tsc[t]||0} · ${pct}%</span></div><div class="bar-track"><div class="bar-fill" style="background:${TCOLORS[t]};width:${pct}%"></div></div></div>`;}).join('');
+  const dBars=DKEYS.map(f=>{const pct=Math.round(((dsc[f]||0)/15)*100);return `<div class="bar-row"><div class="bar-label"><span style="font-weight:600;color:${DCOLORS[f]}">${f} — ${DLABELS[f]}</span><span style="color:${DCOLORS[f]};font-weight:700">${dsc[f]||0} · ${pct}%</span></div><div class="bar-track"><div class="bar-fill" style="background:${DCOLORS[f]};width:${pct}%"></div></div></div>`;}).join('');
+  const self=[['⚡ Talento Natural',p.talento],['😤 Alergia',p.alergia],['🎯 Tarefa de crescimento',p.tarefa],['🪞 Como é visto',p.caricatura]].filter(x=>x[1]).map(([lb,tx])=>`<div class="box" style="margin-bottom:8px"><div class="box-title">${lb}</div><div style="font-size:.82rem">${tx}</div></div>`).join('');
+  const lider=p.lider_direto_id?parts.find(x=>x.id===p.lider_direto_id):null;
+  let corrHtml='';
+  if(lider&&lider.temperamento&&p.temperamento){
+    const c=CORR[corrKey(lider.temperamento,p.temperamento)];
+    if(c){
+      const sy=c.synergy>=75?'#166534':c.synergy>=60?'#C2410C':'#B91C1C';
+      corrHtml=`<h3 style="margin-top:18px">🔗 Correlação com ${lider.nome}</h3>
+      <div class="corr-box" style="background:${c.color}10;border:1px solid ${c.color}40">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+          <span style="font-weight:700;font-size:.88rem;color:${c.color}">${c.type} — ${c.title}</span>
+          <div class="synergy-bar" style="min-width:160px"><div class="synergy-track"><div class="synergy-fill" style="width:${c.synergy}%;background:${sy}"></div></div><span style="font-weight:700;color:${sy}">${c.synergy}%</span></div>
+        </div>
+        <p style="font-size:.82rem;color:#444;line-height:1.6;margin-bottom:10px">${c.desc}</p>
+        <div class="corr-grid">
+          ${[['🤝 Harmonia',c.harmony],['💬 Feedback',c.feedback],['🗣️ Comunicação',c.communication],['🔥 Motivação',c.motivation],['📈 Desenvolvimento',c.development],['⭐ Habilidades',c.skills],['🎯 Melhor Encaixe',c.bestFit],['👁 Potencial',c.potential],['👑 Dica ao Líder',c.leaderTip]].map(([lb,tx])=>`<div class="corr-item"><div class="corr-item-title" style="color:${c.color}">${lb}</div><div class="corr-item-body">${tx||'—'}</div></div>`).join('')}
+        </div>
+      </div>`;
+    }
+  }
+  return `<div class="section">
+    <div class="person-header">
+      <div class="avatar" style="background:${col}22;color:${col}">${ini}</div>
+      <div>
+        <div class="person-name">${p.nome}</div>
+        <div class="person-meta">${p.role==='lider'?'🎯 Líder':'🌱 Colaborador'} · ${p.cargo||''} · ${p.area||''} · ${p.ts||''}</div>
+        <div style="margin-top:4px">
+          ${p.temperamento?`<span class="badge" style="background:${(TEMPS[p.temperamento]||{}).bg};color:${col}">${TLABELS[p.temperamento]}</span>`:''}
+          ${p.disc?`<span class="badge" style="background:${DCOLORS[p.disc]}18;color:${DCOLORS[p.disc]}">${p.disc} — ${DLABELS[p.disc]}</span>`:''}
+          ${lider?`<span class="badge" style="background:#f0ebe0;color:#666">Líder: ${lider.nome}</span>`:''}
+        </div>
+      </div>
+    </div>
+    ${td.science?`<div style="background:${td.bg||'#f8f4ee'};border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#444;line-height:1.6">${td.science}</div>`:''}
+    <div class="grid2">
+      <div><h3>🧠 Temperamento</h3>${tBars}</div>
+      <div><h3>🧩 DISC</h3>${dBars}</div>
+    </div>
+    ${self?`<h3>✨ Autoconhecimento</h3><div class="grid2">${self}</div>`:''}
+    ${td.skills?`<div class="grid2"><div class="box"><div class="box-title">⭐ Principais Habilidades</div><div style="font-size:.8rem;line-height:1.7">${(td.skills||[]).map(s=>`→ ${s}`).join('<br>')}</div></div><div class="box"><div class="box-title">🎯 Onde se Encaixa Melhor</div><div style="font-size:.8rem;line-height:1.6">${td.bestFit||'—'}</div></div></div>`:''}
+    ${corrHtml}
+  </div>`;
+}
+
+function exportPDFAll(){
+  const active=parts.filter(p=>p.role!=='candidato'&&p.temperamento);
+  if(!active.length){alert('Nenhum participante com diagnóstico completo.');return;}
+  const corpo=active.map((p,i)=>(i>0?'<div class="page-break"></div>':'')+personDiagHtml(p)).join('');
+  const html=buildPDFBase('Relatório de Diagnósticos',`${active.length} participantes`,corpo);
+  openPDFWindow(html,`diagnosticos-${new Date().toISOString().slice(0,10)}`);
+}
+
+function exportPDFCorr(){
+  const active=parts.filter(p=>p.role!=='candidato'&&p.temperamento&&p.lider_direto_id);
+  const pares=active.map(p=>{const l=parts.find(x=>x.id===p.lider_direto_id);if(!l||!l.temperamento)return null;return{person:p,lider:l,corr:CORR[corrKey(l.temperamento,p.temperamento)]};}).filter(Boolean);
+  if(!pares.length){alert('Nenhuma correlação líder-liderado disponível.');return;}
+  const cor=TCFG.color||'#1E5C2E';
+  const corpo=pares.map(({person:p,lider:l,corr:c},i)=>{
+    const sy=c.synergy>=75?'#166534':c.synergy>=60?'#C2410C':'#B91C1C';
+    const iniL=l.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+    const iniP=p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+    return `${i>0?'<div class="page-break"></div>':''}<div class="section">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:#f8f4ee;border-radius:10px">
+        <div class="avatar" style="background:${TCOLORS[l.temperamento]||'#888'}22;color:${TCOLORS[l.temperamento]||'#888'}">${iniL}</div>
+        <div style="font-size:1rem;color:#888">→</div>
+        <div class="avatar" style="background:${TCOLORS[p.temperamento]||'#888'}22;color:${TCOLORS[p.temperamento]||'#888'}">${iniP}</div>
+        <div>
+          <div style="font-weight:700;font-size:.95rem">${l.nome} → ${p.nome}</div>
+          <div style="font-size:.77rem;color:#666">${l.cargo||''} lidera ${p.cargo||''}</div>
+          <div style="margin-top:4px"><span class="badge" style="background:${(TEMPS[l.temperamento]||{}).bg};color:${TCOLORS[l.temperamento]}">${TLABELS[l.temperamento]}</span> × <span class="badge" style="background:${(TEMPS[p.temperamento]||{}).bg};color:${TCOLORS[p.temperamento]}">${TLABELS[p.temperamento]}</span></div>
+        </div>
+        <div style="margin-left:auto">
+          <div class="synergy-bar"><div class="synergy-track" style="width:140px"><div class="synergy-fill" style="width:${c.synergy}%;background:${sy}"></div></div><span style="font-weight:700;color:${sy};font-size:.9rem">${c.synergy}%</span></div>
+          <div style="font-size:.72rem;color:${c.color};font-weight:700;text-align:right">${c.type} — ${c.title}</div>
+        </div>
+      </div>
+      <p style="font-size:.84rem;color:#444;line-height:1.65;margin-bottom:16px;padding:12px;background:${c.color}08;border-radius:8px;border-left:3px solid ${c.color}">${c.desc}</p>
+      <div class="corr-grid">
+        ${[['🤝 Harmonia',c.harmony],['💬 Feedback',c.feedback],['🗣️ Comunicação',c.communication],['🔥 Motivação',c.motivation],['📈 Desenvolvimento',c.development],['⭐ Habilidades',c.skills],['🎯 Melhor Encaixe',c.bestFit],['👁 Potencial',c.potential],['👑 Dica ao Líder',c.leaderTip]].map(([lb,tx])=>`<div class="corr-item"><div class="corr-item-title" style="color:${c.color}">${lb}</div><div class="corr-item-body">${tx||'—'}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  const html=buildPDFBase('Relatório de Correlações',`${pares.length} pares líder-liderado`,corpo);
+  openPDFWindow(html,`correlacoes-${new Date().toISOString().slice(0,10)}`);
+}
+
+function exportPDIAll(){
+  const withPlan=parts.filter(p=>p.role!=='candidato'&&p.temperamento).filter(p=>devPlans.find(d=>d.participant_id===p.id&&d.plan_data));
+  if(!withPlan.length){alert('Nenhum PDI gerado ainda. Acesse IA Planos para gerar.');return;}
+  const cor=TCFG.color||'#1E5C2E';
+  const corpo=withPlan.map((p,i)=>{
+    const dp=devPlans.find(d=>d.participant_id===p.id);
+    const plan=dp.plan_data;
+    const lider=p.lider_direto_id?parts.find(x=>x.id===p.lider_direto_id):null;
+    const ini=p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+    const col=TCOLORS[p.temperamento]||'#888';
+    const months=[['Mês 1',plan.mes1,'#1E5C2E'],['Mês 2',plan.mes2,'#C2410C'],['Mês 3',plan.mes3,'#1A3A5C']];
+    return `${i>0?'<div class="page-break"></div>':''}<div class="section">
+      <div class="person-header">
+        <div class="avatar" style="background:${col}22;color:${col}">${ini}</div>
+        <div>
+          <div class="person-name">${p.nome}</div>
+          <div class="person-meta">${p.cargo||''} · ${p.area||''} · ${TLABELS[p.temperamento]||''} · ${p.disc||''}</div>
+          ${lider?`<div style="font-size:.75rem;color:#888;margin-top:2px">Líder direto: ${lider.nome}</div>`:''}
+        </div>
+      </div>
+      <h3>📋 Sumário Executivo</h3>
+      <p style="font-size:.84rem;line-height:1.7;margin-bottom:12px">${plan.sumario}</p>
+      <div class="grid2" style="margin-bottom:16px">
+        <div style="padding:10px;background:${cor}10;border-radius:8px;border:1px solid ${cor}30"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:${cor};margin-bottom:4px">Papel ideal no time</div><div style="font-size:.84rem;font-weight:600">${plan.papelNoTime}</div></div>
+        <div style="padding:10px;background:#F8F4EE;border-radius:8px;font-style:italic"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:4px">Mensagem-chave</div><div style="font-size:.83rem">"${plan.mensagemChave}"</div></div>
+      </div>
+      <div class="grid2" style="margin-bottom:16px">
+        <div class="box"><div class="box-title" style="color:${cor}">✓ Forças identificadas</div>${(plan.forcas||[]).map(f=>`<div style="font-size:.8rem;margin-bottom:4px;padding-left:12px;position:relative"><span style="position:absolute;left:0;color:${cor};font-weight:700">✓</span>${f}</div>`).join('')}</div>
+        <div class="box"><div class="box-title" style="color:#B91C1C">→ Áreas de desenvolvimento</div>${(plan.areas||[]).map(a=>`<div style="font-size:.8rem;margin-bottom:4px;padding-left:12px;position:relative"><span style="position:absolute;left:0;color:#B91C1C;font-weight:700">→</span>${a}</div>`).join('')}</div>
+      </div>
+      <h3>📅 Plano 90 dias</h3>
+      ${months.map(([lb,m,col2])=>m?`<div class="plan-month" style="border-left-color:${col2}">
+        <h4>${lb} — ${m.tema}</h4>
+        <div class="obj">${m.objetivo}</div>
+        ${(m.acoes||[]).map(a=>`<div class="plan-action">${a}</div>`).join('')}
+        <div style="font-size:.72rem;color:#888;margin-top:8px;padding-top:6px;border-top:1px solid #eee">📏 ${m.metrica}</div>
+      </div>`:'')}
+      ${plan.paraLider?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:12px 14px;margin-top:12px"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:#C2410C;margin-bottom:5px">👑 Orientação ao Líder</div><div style="font-size:.82rem;line-height:1.65">${plan.paraLider}</div></div>`:''}
+    </div>`;
+  }).join('');
+  const html=buildPDFBase('Relatório de PDIs',`${withPlan.length} planos de desenvolvimento`,corpo);
+  openPDFWindow(html,`pdis-${new Date().toISOString().slice(0,10)}`);
+}
+
+function exportPersonPDF(id){
+  const p=parts.find(x=>x.id===id);if(!p)return;
+  const corpo=personDiagHtml(p);
+  const html=buildPDFBase('Diagnóstico Individual',p.nome,corpo);
+  openPDFWindow(html,`diagnostico-${p.nome.replace(/\s+/g,'-').toLowerCase()}`);
+}
+
+function openPDFWindow(html,filename){
+  const w=window.open('','_blank','width=1000,height=800');
+  w.document.write(html);w.document.close();
+}
 
 init();
 </script>
